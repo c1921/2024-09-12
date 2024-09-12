@@ -1,0 +1,6 @@
+export const CONFIG = {
+    INITIAL_CHARACTERS: 300,
+    DAY_DURATION_MS: 1,
+    INITIAL_DATE: new Date(2023, 0, 1),
+    MARRIAGE_PROBABILITY: 0.1
+}

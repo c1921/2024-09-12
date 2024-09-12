@@ -1,14 +1,15 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { CharacterImpl } from '../types/Character'
+import { CONFIG } from '../config'
 
 export const useGameStore = defineStore('game', () => {
     const characters = ref<CharacterImpl[]>([])
-    const currentDate = ref(new Date(2023, 0, 1))
+    const currentDate = ref(CONFIG.INITIAL_DATE)
     const isPaused = ref(false)
 
     function initializeCharacters() {
-        for (let i = 0; i < 300; i++) {
+        for (let i = 0; i < CONFIG.INITIAL_CHARACTERS; i++) {
             addCharacter()
         }
     }
@@ -41,7 +42,7 @@ export const useGameStore = defineStore('game', () => {
     function checkMarriages() {
         const unmarriedCharacters = characters.value.filter(c => !c.isMarried)
         for (let character of unmarriedCharacters) {
-            if (Math.random() < 0.1) { // 10% 结婚概率
+            if (Math.random() < CONFIG.MARRIAGE_PROBABILITY) { // 10% 结婚概率
                 const potentialPartners = unmarriedCharacters.filter(c => c.id !== character.id && c.gender !== character.gender)
                 if (potentialPartners.length > 0) {
                     const partner = potentialPartners[Math.floor(Math.random() * potentialPartners.length)]

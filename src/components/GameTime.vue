@@ -14,6 +14,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, onUnmounted } from 'vue'
 import { useGameStore } from '../stores/gameStore'
+import { CONFIG } from '../config'
 
 export default defineComponent({
   name: 'GameTime',
@@ -24,7 +25,7 @@ export default defineComponent({
     const startTimer = () => {
       intervalId = setInterval(() => {
         gameStore.advanceDay()
-      }, 1000)
+      }, CONFIG.DAY_DURATION_MS)
     }
 
     const stopTimer = () => {
