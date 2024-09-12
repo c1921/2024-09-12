@@ -30,7 +30,7 @@ export class CharacterImpl implements Character {
         );
     }
 
-    marry(partner: Character) {
+    marry(partner: CharacterImpl) {
         this.isMarried = true;
         this.spouse = partner;
         partner.isMarried = true;
