@@ -7,6 +7,12 @@ export const useGameStore = defineStore('game', () => {
     const currentDate = ref(new Date(2023, 0, 1))
     const isPaused = ref(false)
 
+    function initializeCharacters() {
+        for (let i = 0; i < 300; i++) {
+            addCharacter()
+        }
+    }
+
     function addCharacter() {
         characters.value.push(CharacterImpl.createRandom())
     }
@@ -55,6 +61,9 @@ export const useGameStore = defineStore('game', () => {
         const day = currentDate.value.getDate().toString().padStart(2, '0')
         return `${year}-${month}-${day}`
     })
+
+    // 初始化角色
+    initializeCharacters()
 
     return { 
         characters, 

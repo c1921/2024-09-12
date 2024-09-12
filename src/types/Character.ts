@@ -45,7 +45,20 @@ export class CharacterImpl implements Character {
     // 新增的生成随机生日的静态方法
     static generateRandomBirthday(): string {
         const month = Math.floor(Math.random() * 12) + 1;
-        const day = Math.floor(Math.random() * 28) + 1; // 简化处理，假设每月最多28天
+        let maxDay;
+
+        switch (month) {
+            case 2:  // 二月
+                maxDay = 28;  // 简化为28天
+                break;
+            case 4: case 6: case 9: case 11:  // 30天的月份
+                maxDay = 30;
+                break;
+            default:  // 31天的月份
+                maxDay = 31;
+        }
+
+        const day = Math.floor(Math.random() * maxDay) + 1;
         return `${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
     }
 
