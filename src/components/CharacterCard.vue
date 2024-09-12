@@ -4,6 +4,8 @@
     <div class="content">
       <p>Age: {{ character.age }}</p>
       <p>Gender: {{ character.gender }}</p>
+      <p>Marital Status: {{ character.isMarried ? 'Married' : 'Single' }}</p>
+      <p v-if="character.isMarried">Spouse: {{ character.spouse?.name }}</p>
     </div>
   </div>
 </template>

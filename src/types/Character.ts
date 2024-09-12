@@ -3,9 +3,14 @@ export interface Character {
     name: string;
     age: number;
     gender: 'Male' | 'Female';
+    isMarried: boolean;
+    spouse: Character | null;
 }
 
 export class CharacterImpl implements Character {
+    public isMarried: boolean = false;
+    public spouse: Character | null = null;
+
     constructor(
         public id: string,
         public name: string,
@@ -23,5 +28,12 @@ export class CharacterImpl implements Character {
             Math.floor(Math.random() * (70 - 18 + 1)) + 18,
             genders[Math.floor(Math.random() * genders.length)]
         );
+    }
+
+    marry(partner: Character) {
+        this.isMarried = true;
+        this.spouse = partner;
+        partner.isMarried = true;
+        partner.spouse = this;
     }
 }
