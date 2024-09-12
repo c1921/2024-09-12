@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { CharacterImpl } from '../types/Character'
+import { Family } from '../types/Family'
 import { CONFIG } from '../config'
 
 export const useGameStore = defineStore('game', () => {
     const characters = ref<CharacterImpl[]>([])
+    const families = ref<Family[]>([])
     const currentDate = ref(CONFIG.INITIAL_DATE)
     const isPaused = ref(false)
 
@@ -15,7 +17,9 @@ export const useGameStore = defineStore('game', () => {
     }
 
     function addCharacter() {
-        characters.value.push(CharacterImpl.createRandom())
+        const newCharacter = CharacterImpl.createRandom()
+        characters.value.push(newCharacter)
+        families.value.push(newCharacter.family)
     }
 
     function advanceDay() {
@@ -68,6 +72,7 @@ export const useGameStore = defineStore('game', () => {
 
     return { 
         characters, 
+        families,
         currentDate, 
         isPaused, 
         formattedDate, 

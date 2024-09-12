@@ -1,3 +1,5 @@
+import { Family } from './Family';
+
 export interface Character {
     id: string;
     name: string;
@@ -6,21 +8,23 @@ export interface Character {
     isMarried: boolean;
     spouse: Character | null;
     birthday: string; // 新增的生日属性
+    family: Family;
     incrementAge(): void;
 }
 
 export class CharacterImpl implements Character {
     public isMarried: boolean = false;
     public spouse: Character | null = null;
-    public birthday: string; // 新增的生日属性
+    public family: Family;
 
     constructor(
         public id: string,
         public name: string,
         public age: number,
-        public gender: 'Male' | 'Female'
+        public gender: 'Male' | 'Female',
+        public birthday: string
     ) {
-        this.birthday = CharacterImpl.generateRandomBirthday();
+        this.family = new Family(this);
     }
 
     static createRandom(): CharacterImpl {
@@ -31,7 +35,8 @@ export class CharacterImpl implements Character {
             Math.random().toString(36).substr(2, 9),
             names[Math.floor(Math.random() * names.length)],
             Math.floor(Math.random() * (70 - 18 + 1)) + 18,
-            genders[Math.floor(Math.random() * genders.length)]
+            genders[Math.floor(Math.random() * genders.length)],
+            CharacterImpl.generateRandomBirthday()
         );
     }
 
@@ -40,6 +45,16 @@ export class CharacterImpl implements Character {
         this.spouse = partner;
         partner.isMarried = true;
         partner.spouse = this;
+
+        if (this.gender === 'Male') {
+            this.family.addMember(partner);
+            partner.family.removeMember(partner);
+            partner.family = this.family;
+        } else {
+            partner.family.addMember(this);
+            this.family.removeMember(this);
+            this.family = partner.family;
+        }
     }
 
     // 新增的生成随机生日的静态方法
