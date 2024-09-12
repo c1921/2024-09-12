@@ -54,6 +54,11 @@ export class CharacterImpl implements Character {
     }
 
     marry(partner: CharacterImpl) {
+        if (this.isMarried || partner.isMarried) {
+            console.error('Attempting to marry an already married character');
+            return;
+        }
+
         this.isMarried = true;
         this.spouse = partner;
         partner.isMarried = true;

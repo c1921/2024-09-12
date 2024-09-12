@@ -12,6 +12,8 @@ export const useGameStore = defineStore('game', () => {
 
     function addCharacter() {
         const newCharacter = CharacterImpl.createRandom()
+        newCharacter.isMarried = false;
+        newCharacter.spouse = null;
         characters.value.push(newCharacter)
         
         // 为新角色创建一个新的家庭
@@ -49,13 +51,14 @@ export const useGameStore = defineStore('game', () => {
 
     function checkMarriages() {
         const unmarriedCharacters = characters.value.filter(c => !c.isMarried)
-        for (let character of unmarriedCharacters) {
-            if (Math.random() < CONFIG.MARRIAGE_PROBABILITY) { // 10% 结婚概率
-                const potentialPartners = unmarriedCharacters.filter(c => c.id !== character.id && c.gender !== character.gender)
-                if (potentialPartners.length > 0) {
-                    const partner = potentialPartners[Math.floor(Math.random() * potentialPartners.length)]
-                    character.marry(partner)
-                }
+        const shuffled = [...unmarriedCharacters].sort(() => 0.5 - Math.random())
+
+        for (let i = 0; i < shuffled.length - 1; i += 2) {
+            const char1 = shuffled[i]
+            const char2 = shuffled[i + 1]
+
+            if (char1.gender !== char2.gender && Math.random() < CONFIG.MARRIAGE_PROBABILITY) {
+                char1.marry(char2)
             }
         }
     }
