@@ -60,15 +60,19 @@ export class CharacterImpl implements Character {
         partner.spouse = this;
 
         if (this.gender === 'Male') {
+            // 将伴侣加入到这个角色的家庭
             this.family.addMember(partner);
+            // 从伴侣原来的家庭中移除伴侣
             partner.family.removeMember(partner);
+            // 更新伴侣的家庭引用
             partner.family = this.family;
-            partner.lastName = this.lastName; // 女性采用男性的姓氏
         } else {
+            // 将这个角色加入到伴侣的家庭
             partner.family.addMember(this);
+            // 从这个角色原来的家庭中移除它
             this.family.removeMember(this);
+            // 更新这个角色的家庭引用
             this.family = partner.family;
-            this.lastName = partner.lastName; // 女性采用男性的姓氏
         }
     }
 

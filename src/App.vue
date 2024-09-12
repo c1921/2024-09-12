@@ -1,54 +1,73 @@
 <template>
   <div class="container">
     <GameTime class="mb-4" />
-    <div class="buttons mb-4">
-      <button class="button is-primary" @click="gameStore.addCharacter">Add Random Character</button>
+    <div class="columns">
+      <div class="column is-one-third">
+        <FamilyList 
+          :families="gameStore.families"
+          :selectedFamilyId="selectedFamily?.id"
+          @addCharacter="gameStore.addCharacter"
+          @selectFamily="selectFamily"
+        />
+      </div>
+      <div class="column is-one-third">
+        <FamilyDetails 
+          :family="selectedFamily" 
+          @selectCharacter="selectCharacter" 
+        />
+      </div>
+      <div class="column is-one-third">
+        <CharacterDetails :character="selectedCharacter" />
+      </div>
     </div>
-    <table class="table is-fullwidth">
-      <thead>
-        <tr>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Age</th>
-          <th>Gender</th>
-          <th>Birthday</th>
-          <th>Marital Status</th>
-          <th>Spouse</th>
-          <th>Family</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="character in gameStore.characters" :key="character.id">
-          <td>{{ character.firstName }}</td>
-          <td>{{ character.lastName }}</td>
-          <td>{{ character.age }}</td>
-          <td>{{ character.gender }}</td>
-          <td>{{ character.birthday }}</td>
-          <td>{{ character.isMarried ? 'Married' : 'Single' }}</td>
-          <td>{{ character.spouse ? `${character.spouse.firstName} ${character.spouse.lastName}` : '-' }}</td>
-          <td>{{ character.family.name }}</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import GameTime from './components/GameTime.vue'
+import FamilyList from './components/FamilyList.vue'
+import FamilyDetails from './components/FamilyDetails.vue'
+import CharacterDetails from './components/CharacterDetails.vue'
 import { useGameStore } from './stores/gameStore'
+import { CharacterImpl } from './types/Character'
+import { Family } from './types/Family'
 
 export default defineComponent({
   name: 'App',
   components: {
     GameTime,
+    FamilyList,
+    FamilyDetails,
+    CharacterDetails
   },
   setup() {
     const gameStore = useGameStore()
+    const selectedFamily = ref<Family | null>(null)
+    const selectedCharacter = ref<CharacterImpl | null>(null)
+
+    function selectFamily(family: Family) {
+      selectedFamily.value = family
+      selectedCharacter.value = null
+    }
+
+    function selectCharacter(character: CharacterImpl) {
+      selectedCharacter.value = character
+    }
 
     return {
-      gameStore
+      gameStore,
+      selectedFamily,
+      selectedCharacter,
+      selectFamily,
+      selectCharacter
     }
   }
 })
 </script>
+
+<style scoped>
+.is-selected {
+  background-color: #e8e8e8;
+}
+</style>

@@ -10,16 +10,20 @@ export const useGameStore = defineStore('game', () => {
     const currentDate = ref(CONFIG.INITIAL_DATE)
     const isPaused = ref(false)
 
+    function addCharacter() {
+        const newCharacter = CharacterImpl.createRandom()
+        characters.value.push(newCharacter)
+        
+        // 为新角色创建一个新的家庭
+        const newFamily = new Family(newCharacter)
+        families.value.push(newFamily)
+        newCharacter.family = newFamily
+    }
+
     function initializeCharacters() {
         for (let i = 0; i < CONFIG.INITIAL_CHARACTERS; i++) {
             addCharacter()
         }
-    }
-
-    function addCharacter() {
-        const newCharacter = CharacterImpl.createRandom()
-        characters.value.push(newCharacter)
-        families.value.push(newCharacter.family)
     }
 
     function advanceDay() {
