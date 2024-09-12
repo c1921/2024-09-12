@@ -7,7 +7,7 @@ export class Family {
 
     constructor(firstMember: Character) {
         this.id = Math.random().toString(36).substr(2, 9);
-        this.name = firstMember.name;
+        this.name = firstMember.lastName; // 使用姓氏作为家庭名称
         this.members = [firstMember];
     }
 

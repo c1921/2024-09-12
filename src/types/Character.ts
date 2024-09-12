@@ -1,13 +1,21 @@
 import { Family } from './Family';
+import surnamesData from '../data/surnames.json';
+import maleNamesData from '../data/maleNames.json';
+import femaleNamesData from '../data/femaleNames.json';
+
+const surnames = surnamesData.surnames;
+const maleNames = maleNamesData.maleNames;
+const femaleNames = femaleNamesData.femaleNames;
 
 export interface Character {
     id: string;
-    name: string;
+    firstName: string;
+    lastName: string;
     age: number;
     gender: 'Male' | 'Female';
     isMarried: boolean;
     spouse: Character | null;
-    birthday: string; // 新增的生日属性
+    birthday: string;
     family: Family;
     incrementAge(): void;
 }
@@ -19,7 +27,8 @@ export class CharacterImpl implements Character {
 
     constructor(
         public id: string,
-        public name: string,
+        public firstName: string,
+        public lastName: string,
         public age: number,
         public gender: 'Male' | 'Female',
         public birthday: string
@@ -28,14 +37,18 @@ export class CharacterImpl implements Character {
     }
 
     static createRandom(): CharacterImpl {
-        const names = ['Alex', 'Sam', 'Jordan', 'Taylor', 'Morgan', 'Casey', 'Riley', 'Quinn'];
-        const genders: ('Male' | 'Female')[] = ['Male', 'Female'];
+        const gender: 'Male' | 'Female' = Math.random() < 0.5 ? 'Male' : 'Female';
+        const firstName = gender === 'Male' 
+            ? maleNames[Math.floor(Math.random() * maleNames.length)]
+            : femaleNames[Math.floor(Math.random() * femaleNames.length)];
+        const lastName = surnames[Math.floor(Math.random() * surnames.length)];
 
         return new CharacterImpl(
             Math.random().toString(36).substr(2, 9),
-            names[Math.floor(Math.random() * names.length)],
+            firstName,
+            lastName,
             Math.floor(Math.random() * (70 - 18 + 1)) + 18,
-            genders[Math.floor(Math.random() * genders.length)],
+            gender,
             CharacterImpl.generateRandomBirthday()
         );
     }
@@ -50,10 +63,12 @@ export class CharacterImpl implements Character {
             this.family.addMember(partner);
             partner.family.removeMember(partner);
             partner.family = this.family;
+            partner.lastName = this.lastName; // 女性采用男性的姓氏
         } else {
             partner.family.addMember(this);
             this.family.removeMember(this);
             this.family = partner.family;
+            this.lastName = partner.lastName; // 女性采用男性的姓氏
         }
     }
 

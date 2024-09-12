@@ -7,7 +7,8 @@
     <table class="table is-fullwidth">
       <thead>
         <tr>
-          <th>Name</th>
+          <th>First Name</th>
+          <th>Last Name</th>
           <th>Age</th>
           <th>Gender</th>
           <th>Birthday</th>
@@ -18,12 +19,13 @@
       </thead>
       <tbody>
         <tr v-for="character in gameStore.characters" :key="character.id">
-          <td>{{ character.name }}</td>
+          <td>{{ character.firstName }}</td>
+          <td>{{ character.lastName }}</td>
           <td>{{ character.age }}</td>
           <td>{{ character.gender }}</td>
           <td>{{ character.birthday }}</td>
           <td>{{ character.isMarried ? 'Married' : 'Single' }}</td>
-          <td>{{ character.spouse?.name || '-' }}</td>
+          <td>{{ character.spouse ? `${character.spouse.firstName} ${character.spouse.lastName}` : '-' }}</td>
           <td>{{ character.family.name }}</td>
         </tr>
       </tbody>
