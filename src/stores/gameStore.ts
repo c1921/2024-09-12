@@ -12,41 +12,15 @@ export const useGameStore = defineStore('game', () => {
 
     function addCharacter() {
         const newCharacter = CharacterImpl.createRandom()
-        newCharacter.isMarried = false;
-        newCharacter.spouse = null;
         characters.value.push(newCharacter)
         
-        // 为新角色创建一个新的家庭
         const newFamily = new Family(newCharacter)
         families.value.push(newFamily)
         newCharacter.family = newFamily
     }
 
-    function initializeCharacters() {
-        for (let i = 0; i < CONFIG.INITIAL_CHARACTERS; i++) {
-            addCharacter()
-        }
-    }
-
-    function advanceDay() {
-        if (!isPaused.value) {
-            currentDate.value.setDate(currentDate.value.getDate() + 1)
-            currentDate.value = new Date(currentDate.value) // 触发响应性
-            checkBirthdays()
-            checkMarriages()
-        }
-    }
-
-    function checkBirthdays() {
-        const currentMonth = (currentDate.value.getMonth() + 1).toString().padStart(2, '0')
-        const currentDay = currentDate.value.getDate().toString().padStart(2, '0')
-        const currentDateString = `${currentMonth}-${currentDay}`
-
-        characters.value.forEach(character => {
-            if (character.birthday === currentDateString) {
-                character.incrementAge()
-            }
-        })
+    function removeEmptyFamilies() {
+        families.value = families.value.filter(family => family.members.length > 0)
     }
 
     function checkMarriages() {
@@ -63,6 +37,28 @@ export const useGameStore = defineStore('game', () => {
         }
     }
 
+    function advanceDay() {
+        if (!isPaused.value) {
+            currentDate.value.setDate(currentDate.value.getDate() + 1)
+            currentDate.value = new Date(currentDate.value) // 触发响应性
+            checkBirthdays()
+            checkMarriages()
+            removeEmptyFamilies() // 在每天结束时检查并移除空家庭
+        }
+    }
+
+    function checkBirthdays() {
+        const currentMonth = (currentDate.value.getMonth() + 1).toString().padStart(2, '0')
+        const currentDay = currentDate.value.getDate().toString().padStart(2, '0')
+        const currentDateString = `${currentMonth}-${currentDay}`
+
+        characters.value.forEach(character => {
+            if (character.birthday === currentDateString) {
+                character.incrementAge()
+            }
+        })
+    }
+
     function togglePause() {
         isPaused.value = !isPaused.value
     }
@@ -75,6 +71,12 @@ export const useGameStore = defineStore('game', () => {
     })
 
     // 初始化角色
+    function initializeCharacters() {
+        for (let i = 0; i < CONFIG.INITIAL_CHARACTERS; i++) {
+            addCharacter()
+        }
+    }
+
     initializeCharacters()
 
     return { 
@@ -86,6 +88,6 @@ export const useGameStore = defineStore('game', () => {
         addCharacter, 
         advanceDay, 
         checkMarriages, 
-        togglePause 
+        togglePause
     }
 })
