@@ -10,6 +10,7 @@
           <th>Name</th>
           <th>Age</th>
           <th>Gender</th>
+          <th>Birthday</th>
           <th>Marital Status</th>
           <th>Spouse</th>
         </tr>
@@ -19,6 +20,7 @@
           <td>{{ character.name }}</td>
           <td>{{ character.age }}</td>
           <td>{{ character.gender }}</td>
+          <td>{{ character.birthday }}</td>
           <td>{{ character.isMarried ? 'Married' : 'Single' }}</td>
           <td>{{ character.spouse?.name || '-' }}</td>
         </tr>

@@ -15,8 +15,21 @@ export const useGameStore = defineStore('game', () => {
         if (!isPaused.value) {
             currentDate.value.setDate(currentDate.value.getDate() + 1)
             currentDate.value = new Date(currentDate.value) // 触发响应性
+            checkBirthdays()
             checkMarriages()
         }
+    }
+
+    function checkBirthdays() {
+        const currentMonth = (currentDate.value.getMonth() + 1).toString().padStart(2, '0')
+        const currentDay = currentDate.value.getDate().toString().padStart(2, '0')
+        const currentDateString = `${currentMonth}-${currentDay}`
+
+        characters.value.forEach(character => {
+            if (character.birthday === currentDateString) {
+                character.incrementAge()
+            }
+        })
     }
 
     function checkMarriages() {
@@ -36,7 +49,12 @@ export const useGameStore = defineStore('game', () => {
         isPaused.value = !isPaused.value
     }
 
-    const formattedDate = computed(() => currentDate.value.toISOString().split('T')[0])
+    const formattedDate = computed(() => {
+        const year = currentDate.value.getFullYear()
+        const month = (currentDate.value.getMonth() + 1).toString().padStart(2, '0')
+        const day = currentDate.value.getDate().toString().padStart(2, '0')
+        return `${year}-${month}-${day}`
+    })
 
     return { 
         characters, 
