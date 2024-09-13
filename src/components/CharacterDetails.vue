@@ -49,6 +49,7 @@
         </span>
         <span v-else>None</span>
       </p>
+      <p><strong>Status: </strong>{{ character.isDead ? 'Deceased' : 'Alive' }}</p>
     </div>
   </div>
   <div v-else class="box">

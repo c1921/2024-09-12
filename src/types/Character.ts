@@ -22,6 +22,7 @@ export interface Character {
     mother: Character | null;
     children: Character[];
     siblings: Character[];
+    isDead: boolean;
 }
 
 export class CharacterImpl implements Character {
@@ -35,6 +36,7 @@ export class CharacterImpl implements Character {
     public mother: Character | null = null;
     public children: Character[] = [];
     public siblings: Character[] = [];
+    public isDead: boolean = false;
 
     constructor(
         public id: string,
@@ -88,6 +90,15 @@ export class CharacterImpl implements Character {
         if (!this.siblings.includes(sibling)) {
             this.siblings.push(sibling);
             sibling.siblings.push(this);
+        }
+    }
+
+    die(): void {
+        this.isDead = true;
+        this.status.push('Deceased');
+        if (this.spouse) {
+            this.spouse.spouse = null;
+            this.spouse.isMarried = false;
         }
     }
 }

@@ -4,5 +4,6 @@ export const CONFIG = {
     INITIAL_DATE: new Date(2023, 0, 1),
     MARRIAGE_PROBABILITY: 0.1,
     SEXUAL_BEHAVIOR_PROBABILITY: 0.1, // 每天每对夫妇发生性行为的概率为10%
-    MINIMUM_MARRIAGE_AGE: 18 // 设置最低结婚年龄为18岁
+    MINIMUM_MARRIAGE_AGE: 18, // 设置最低结婚年龄为18岁
+    DEATH_AGE: 80,
 }

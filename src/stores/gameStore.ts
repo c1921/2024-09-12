@@ -77,6 +77,7 @@ export const useGameStore = defineStore('game', () => {
             removeEmptyFamilies() // 在每天结束时检查并移除空家庭
             checkSexualBehavior();
             checkPregnancies(); // 添加这行
+            checkDeaths(); // 添加这行
         }
     }
 
@@ -183,6 +184,26 @@ export const useGameStore = defineStore('game', () => {
         addLog(`${mother.firstName} ${mother.lastName} gave birth to ${baby.firstName} ${baby.lastName}`);
     }
 
+    function checkDeaths() {
+        characters.value.forEach((character: CharacterImpl) => {
+            if (!character.isDead && character.age >= CONFIG.DEATH_AGE) {
+                character.die();
+                addLog(`${character.firstName} ${character.lastName} has passed away at the age of ${character.age}.`);
+                
+                // 从家庭中移除角色
+                character.family.removeMember(character);
+                
+                // 如果家庭中没有其他成员，移除该家庭
+                if (character.family.members.length === 0) {
+                    removeFamily(character.family);
+                }
+            }
+        });
+        
+        // 移除已死亡的角色
+        characters.value = characters.value.filter(c => !c.isDead);
+    }
+
     return { 
         characters, 
         families,
@@ -201,6 +222,7 @@ export const useGameStore = defineStore('game', () => {
         removeStatusFromCharacter,
         performSexualAct,
         checkPregnancies,
-        giveBirth
+        giveBirth,
+        checkDeaths
     }
 })
