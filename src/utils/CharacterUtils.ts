@@ -87,10 +87,6 @@ export class CharacterUtils {
             });
         }
 
-        // 新生儿的生理属性可能需要特殊处理
-        baby.physiology.health = 100;
-        baby.physiology.fertility = 0; // 婴儿没有生育能力
-
         return baby;
     }
 }

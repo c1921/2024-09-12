@@ -1,5 +1,4 @@
 import { CharacterImpl } from '../types/Character';
-import { useGameStore } from '../stores/gameStore';
 
 export class SexualBehaviorService {
     static performSexualAct(character1: CharacterImpl, character2: CharacterImpl): boolean {
