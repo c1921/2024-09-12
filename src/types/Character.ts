@@ -1,6 +1,15 @@
 import { Family } from './Family';
 
 export interface Character {
+    id: string;
+    firstName: string;
+    lastName: string;
+    age: number;
+    gender: 'Male' | 'Female';
+    birthday: string;
+    isMarried: boolean;
+    spouse: Character | null;
+    family: Family;
 }
 
 export class CharacterImpl implements Character {

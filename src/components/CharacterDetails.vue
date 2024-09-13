@@ -19,15 +19,15 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { CharacterImpl } from '../types/Character'
+import { Character } from '../types/Character'
 
 export default defineComponent({
   name: 'CharacterDetails',
   props: {
     character: {
-      type: Object as PropType<CharacterImpl | null>, // 修改这里
+      type: Object as PropType<Character | null>,
       required: false,
-      default: null // 添加默认值
+      default: null
     }
   }
 })
