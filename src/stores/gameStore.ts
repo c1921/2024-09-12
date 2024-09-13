@@ -161,9 +161,14 @@ export const useGameStore = defineStore('game', () => {
     }
 
     function giveBirth(mother: CharacterImpl) {
-        const baby = CharacterUtils.createBaby(mother.family.name);
+        const father = mother.spouse as CharacterImpl | null;
+        const baby = CharacterUtils.createBaby(mother, father);
         characters.value.push(baby);
         mother.family.addMember(baby);
+        mother.addChild(baby);
+        if (father) {
+            father.addChild(baby);
+        }
         mother.removeStatus('Pregnant');
         mother.pregnancyCountdown = null;
         addLog(`${mother.firstName} ${mother.lastName} gave birth to ${baby.firstName} ${baby.lastName}`);

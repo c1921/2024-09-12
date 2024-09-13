@@ -22,6 +22,30 @@
         </span>
         <span v-else>None</span>
       </p>
+      <p>
+        <strong>Father: </strong>
+        <span v-if="character.father">{{ character.father.firstName }} {{ character.father.lastName }}</span>
+        <span v-else>Unknown</span>
+      </p>
+      <p>
+        <strong>Mother: </strong>
+        <span v-if="character.mother">{{ character.mother.firstName }} {{ character.mother.lastName }}</span>
+        <span v-else>Unknown</span>
+      </p>
+      <p>
+        <strong>Siblings: </strong>
+        <span v-if="character.siblings.length > 0">
+          {{ character.siblings.map(sibling => `${sibling.firstName} ${sibling.lastName}`).join(', ') }}
+        </span>
+        <span v-else>None</span>
+      </p>
+      <p>
+        <strong>Children: </strong>
+        <span v-if="character.children.length > 0">
+          {{ character.children.map(child => `${child.firstName} ${child.lastName}`).join(', ') }}
+        </span>
+        <span v-else>None</span>
+      </p>
     </div>
   </div>
   <div v-else class="box">

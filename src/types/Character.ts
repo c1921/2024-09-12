@@ -18,6 +18,10 @@ export interface Character {
     physiology: Physiology;
     status: string[]; // 新增状态属性
     pregnancyCountdown: number | null;
+    father: Character | null;
+    mother: Character | null;
+    children: Character[];
+    siblings: Character[];
 }
 
 export class CharacterImpl implements Character {
@@ -27,6 +31,10 @@ export class CharacterImpl implements Character {
     public physiology: Physiology;
     public status: string[] = []; // 初始化为空数组
     public pregnancyCountdown: number | null = null;
+    public father: Character | null = null;
+    public mother: Character | null = null;
+    public children: Character[] = [];
+    public siblings: Character[] = [];
 
     constructor(
         public id: string,
@@ -70,5 +78,16 @@ export class CharacterImpl implements Character {
             }
         }
         return false;
+    }
+
+    addChild(child: Character) {
+        this.children.push(child);
+    }
+
+    addSibling(sibling: Character) {
+        if (!this.siblings.includes(sibling)) {
+            this.siblings.push(sibling);
+            sibling.siblings.push(this);
+        }
     }
 }

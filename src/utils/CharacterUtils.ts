@@ -55,7 +55,7 @@ export class CharacterUtils {
         return Math.floor(Math.random() * 21) + 80;
     }
 
-    static createBaby(familyName: string): CharacterImpl {
+    static createBaby(mother: CharacterImpl, father: CharacterImpl | null): CharacterImpl {
         const gender: 'Male' | 'Female' = Math.random() < 0.5 ? 'Male' : 'Female';
         const firstName = gender === 'Male' 
             ? maleNames[Math.floor(Math.random() * maleNames.length)]
@@ -64,11 +64,21 @@ export class CharacterUtils {
         const baby = new CharacterImpl(
             Math.random().toString(36).substr(2, 9),
             firstName,
-            familyName,
+            mother.lastName,
             0,
             gender,
             CharacterUtils.generateRandomBirthday()
         );
+
+        baby.mother = mother;
+        baby.father = father;
+
+        // 设置兄弟姐妹关系
+        mother.children.forEach(sibling => {
+            if (sibling !== baby) {
+                baby.addSibling(sibling);
+            }
+        });
 
         // 新生儿的生理属性可能需要特殊处理
         baby.physiology.health = 100;
