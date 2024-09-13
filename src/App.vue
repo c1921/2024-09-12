@@ -10,14 +10,15 @@
           @selectFamily="selectFamily"
         />
       </div>
-      <div class="column is-one-third">
+      <div class="column is-two-thirds">
         <FamilyDetails 
           :family="selectedFamily" 
           @selectCharacter="selectCharacter" 
         />
-      </div>
-      <div class="column is-one-third">
-        <CharacterDetails :character="selectedCharacter" />
+        <CharacterDetails 
+          :character="selectedCharacter" 
+          class="mt-4"
+        />
       </div>
     </div>
   </div>
@@ -65,9 +66,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style scoped>
-.is-selected {
-  background-color: #e8e8e8;
-}
-</style>
