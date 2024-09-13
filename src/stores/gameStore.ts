@@ -13,6 +13,15 @@ export const useGameStore = defineStore('game', () => {
     const isPaused = ref(false)
     const unmarriedCharacters = ref<CharacterImpl[]>([]);
 
+    const logs = ref<string[]>([])
+
+    function addLog(message: string) {
+        logs.value.unshift(`${formattedDate.value}: ${message}`)
+        if (logs.value.length > 100) {
+            logs.value.pop()
+        }
+    }
+
     function addCharacter() {
         const newCharacter = CharacterUtils.createRandom()
         characters.value.push(newCharacter)
@@ -20,6 +29,8 @@ export const useGameStore = defineStore('game', () => {
         const newFamily = new Family(newCharacter)
         families.value.push(newFamily)
         newCharacter.family = newFamily
+
+        addLog(`New character ${newCharacter.firstName} ${newCharacter.lastName} added`)
     }
 
     function removeEmptyFamilies() {
@@ -36,6 +47,7 @@ export const useGameStore = defineStore('game', () => {
 
             if (Math.random() < CONFIG.MARRIAGE_PROBABILITY) {
                 MarriageService.marry(char1, char2);
+                addLog(`${char1.firstName} ${char1.lastName} married ${char2.firstName} ${char2.lastName}`)
             }
         }
     }
@@ -58,6 +70,7 @@ export const useGameStore = defineStore('game', () => {
         characters.value.forEach((character: CharacterImpl) => {
             if (character.birthday === currentDateString) {
                 character.incrementAge()
+                addLog(`${character.firstName} ${character.lastName} celebrated their ${character.age}th birthday`)
             }
         })
     }
@@ -102,6 +115,8 @@ export const useGameStore = defineStore('game', () => {
         checkMarriages, 
         togglePause,
         removeFamily,
-        removeFromUnmarried
+        removeFromUnmarried,
+        logs,
+        addLog
     }
 })

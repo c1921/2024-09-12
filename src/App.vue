@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <GameTime class="mb-4" />
+    <GameLog class="mb-4" />
     <div class="columns">
       <div class="column is-one-third">
         <FamilyList 
@@ -27,6 +28,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import GameTime from './components/GameTime.vue'
+import GameLog from './components/GameLog.vue'
 import FamilyList from './components/FamilyList.vue'
 import FamilyDetails from './components/FamilyDetails.vue'
 import CharacterDetails from './components/CharacterDetails.vue'
@@ -38,6 +40,7 @@ export default defineComponent({
   name: 'App',
   components: {
     GameTime,
+    GameLog,
     FamilyList,
     FamilyDetails,
     CharacterDetails
