@@ -7,7 +7,7 @@ export class SexualBehaviorService {
 
         if (isPregnant) {
             const femaleCharacter = character1.gender === 'Female' ? character1 : character2;
-            if (!femaleCharacter.status.includes('Pregnant')) {
+            if (!femaleCharacter.status.includes('Pregnant') && femaleCharacter.pregnancyCooldown === 0) {
                 femaleCharacter.startPregnancy();
                 return true;
             }

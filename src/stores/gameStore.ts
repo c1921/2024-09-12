@@ -78,7 +78,14 @@ export const useGameStore = defineStore('game', () => {
             checkSexualBehavior();
             checkPregnancies(); // 添加这行
             checkDeaths(); // 添加这行
+            updatePregnancyCooldowns(); // 新增这行
         }
+    }
+
+    function updatePregnancyCooldowns() {
+        characters.value.forEach((character: CharacterImpl) => {
+            character.updatePregnancyCooldown();
+        });
     }
 
     function checkBirthdays() {
@@ -177,8 +184,7 @@ export const useGameStore = defineStore('game', () => {
         if (father) {
             father.addChild(baby);
         }
-        mother.removeStatus('Pregnant');
-        mother.pregnancyCountdown = null;
+        mother.giveBirth(); // 使用新的 giveBirth 方法
         addLog(`${mother.firstName} ${mother.lastName} gave birth to ${baby.firstName} ${baby.lastName}`);
     }
 
@@ -221,6 +227,7 @@ export const useGameStore = defineStore('game', () => {
         performSexualAct,
         checkPregnancies,
         giveBirth,
-        checkDeaths
+        checkDeaths,
+        updatePregnancyCooldowns
     }
 })

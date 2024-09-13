@@ -9,5 +9,6 @@ export const CONFIG = {
     MINIMUM_MARRIAGE_AGE: 18, // 设置最低结婚年龄为18岁
     DEATH_AGE: 80,
     FERTILITY_PEAK_AGE: 20, // 新增：生育能力峰值年龄
-    FERTILITY_END_AGE: 50   // 新增：生育能力结束年龄
+    FERTILITY_END_AGE: 50,   // 新增：生育能力结束年龄
+    PREGNANCY_COOLDOWN: 120, // 新增：怀孕冷却期（天数）
 };

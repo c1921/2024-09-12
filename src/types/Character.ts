@@ -24,6 +24,7 @@ export interface Character {
     children: Character[];
     siblings: Character[];
     isDead: boolean;
+    pregnancyCooldown: number;
 }
 
 export class CharacterImpl implements Character {
@@ -38,6 +39,7 @@ export class CharacterImpl implements Character {
     public children: Character[] = [];
     public siblings: Character[] = [];
     public isDead: boolean = false;
+    public pregnancyCooldown: number = 0;
 
     constructor(
         public id: string,
@@ -129,5 +131,17 @@ export class CharacterImpl implements Character {
 
         // 应用衰减因子到初始生育能力
         this.physiology.fertility = Math.max(0, Math.floor(initialFertility * fertilityFactor));
+    }
+
+    giveBirth(): void {
+        this.removeStatus('Pregnant');
+        this.pregnancyCountdown = null;
+        this.pregnancyCooldown = CONFIG.PREGNANCY_COOLDOWN;
+    }
+
+    updatePregnancyCooldown(): void {
+        if (this.pregnancyCooldown > 0) {
+            this.pregnancyCooldown--;
+        }
     }
 }
