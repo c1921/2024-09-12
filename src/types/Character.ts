@@ -17,6 +17,7 @@ export interface Character {
     family: Family;
     physiology: Physiology;
     status: string[]; // 新增状态属性
+    pregnancyCountdown: number | null;
 }
 
 export class CharacterImpl implements Character {
@@ -25,6 +26,7 @@ export class CharacterImpl implements Character {
     public family: Family;
     public physiology: Physiology;
     public status: string[] = []; // 初始化为空数组
+    public pregnancyCountdown: number | null = null;
 
     constructor(
         public id: string,
@@ -53,5 +55,20 @@ export class CharacterImpl implements Character {
 
     removeStatus(statusToRemove: string): void {
         this.status = this.status.filter(status => status !== statusToRemove);
+    }
+
+    startPregnancy() {
+        this.addStatus('Pregnant');
+        this.pregnancyCountdown = 270; // 假设怀孕期为270天
+    }
+
+    advancePregnancy() {
+        if (this.pregnancyCountdown !== null) {
+            this.pregnancyCountdown--;
+            if (this.pregnancyCountdown <= 0) {
+                return true; // 表示应该生育
+            }
+        }
+        return false;
     }
 }

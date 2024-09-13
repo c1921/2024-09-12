@@ -8,10 +8,12 @@ export class SexualBehaviorService {
 
         if (isPregnant) {
             const femaleCharacter = character1.gender === 'Female' ? character1 : character2;
-            const gameStore = useGameStore();
-            gameStore.addStatusToCharacter(femaleCharacter.id, 'Pregnant');
+            if (!femaleCharacter.status.includes('Pregnant')) {
+                femaleCharacter.startPregnancy();
+                return true;
+            }
         }
 
-        return true;
+        return false;
     }
 }

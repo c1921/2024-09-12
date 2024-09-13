@@ -14,7 +14,12 @@
       <p><strong>Fertility: </strong>{{ character.physiology.fertility }}</p>
       <p>
         <strong>Status: </strong>
-        <span v-if="character.status.length > 0">{{ character.status.join(', ') }}</span>
+        <span v-if="character.status.length > 0">
+          {{ character.status.join(', ') }}
+          <span v-if="character.pregnancyCountdown !== null">
+            ({{ character.pregnancyCountdown }} days until birth)
+          </span>
+        </span>
         <span v-else>None</span>
       </p>
     </div>

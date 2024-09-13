@@ -54,4 +54,26 @@ export class CharacterUtils {
         // 生成80到100之间的随机整数
         return Math.floor(Math.random() * 21) + 80;
     }
+
+    static createBaby(familyName: string): CharacterImpl {
+        const gender: 'Male' | 'Female' = Math.random() < 0.5 ? 'Male' : 'Female';
+        const firstName = gender === 'Male' 
+            ? maleNames[Math.floor(Math.random() * maleNames.length)]
+            : femaleNames[Math.floor(Math.random() * femaleNames.length)];
+
+        const baby = new CharacterImpl(
+            Math.random().toString(36).substr(2, 9),
+            firstName,
+            familyName,
+            0,
+            gender,
+            CharacterUtils.generateRandomBirthday()
+        );
+
+        // 新生儿的生理属性可能需要特殊处理
+        baby.physiology.health = 100;
+        baby.physiology.fertility = 0; // 婴儿没有生育能力
+
+        return baby;
+    }
 }

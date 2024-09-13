@@ -74,6 +74,7 @@ export const useGameStore = defineStore('game', () => {
             checkMarriages()
             removeEmptyFamilies() // 在每天结束时检查并移除空家庭
             checkSexualBehavior();
+            checkPregnancies(); // 添加这行
         }
     }
 
@@ -149,6 +150,25 @@ export const useGameStore = defineStore('game', () => {
         }
     }
 
+    function checkPregnancies() {
+        characters.value.forEach((character: CharacterImpl) => {
+            if (character.status.includes('Pregnant')) {
+                if (character.advancePregnancy()) {
+                    giveBirth(character);
+                }
+            }
+        });
+    }
+
+    function giveBirth(mother: CharacterImpl) {
+        const baby = CharacterUtils.createBaby(mother.family.name);
+        characters.value.push(baby);
+        mother.family.addMember(baby);
+        mother.removeStatus('Pregnant');
+        mother.pregnancyCountdown = null;
+        addLog(`${mother.firstName} ${mother.lastName} gave birth to ${baby.firstName} ${baby.lastName}`);
+    }
+
     return { 
         characters, 
         families,
@@ -165,6 +185,8 @@ export const useGameStore = defineStore('game', () => {
         addLog,
         addStatusToCharacter,
         removeStatusFromCharacter,
-        performSexualAct
+        performSexualAct,
+        checkPregnancies,
+        giveBirth
     }
 })
