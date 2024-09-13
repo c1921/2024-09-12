@@ -1,17 +1,20 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { CharacterImpl } from '../types/Character'
+import { CharacterImpl } from '../types/Character';
+import { CharacterUtils } from '../utils/CharacterUtils'
 import { Family } from '../types/Family'
 import { CONFIG } from '../config'
+import { MarriageService } from '../services/MarriageService';
 
 export const useGameStore = defineStore('game', () => {
     const characters = ref<CharacterImpl[]>([])
     const families = ref<Family[]>([])
     const currentDate = ref(CONFIG.INITIAL_DATE)
     const isPaused = ref(false)
+    const unmarriedCharacters = ref<CharacterImpl[]>([]);
 
     function addCharacter() {
-        const newCharacter = CharacterImpl.createRandom()
+        const newCharacter = CharacterUtils.createRandom()
         characters.value.push(newCharacter)
         
         const newFamily = new Family(newCharacter)
@@ -24,15 +27,15 @@ export const useGameStore = defineStore('game', () => {
     }
 
     function checkMarriages() {
-        const unmarriedCharacters = characters.value.filter(c => !c.isMarried)
-        const shuffled = [...unmarriedCharacters].sort(() => 0.5 - Math.random())
+        const unmarriedCharacters = characters.value.filter((c: CharacterImpl) => !c.isMarried);
+        const shuffled = [...unmarriedCharacters].sort(() => 0.5 - Math.random());
 
         for (let i = 0; i < shuffled.length - 1; i += 2) {
-            const char1 = shuffled[i]
-            const char2 = shuffled[i + 1]
+            const char1 = shuffled[i];
+            const char2 = shuffled[i + 1];
 
-            if (char1.gender !== char2.gender && Math.random() < CONFIG.MARRIAGE_PROBABILITY) {
-                char1.marry(char2)
+            if (Math.random() < CONFIG.MARRIAGE_PROBABILITY) {
+                MarriageService.marry(char1, char2);
             }
         }
     }
@@ -52,7 +55,7 @@ export const useGameStore = defineStore('game', () => {
         const currentDay = currentDate.value.getDate().toString().padStart(2, '0')
         const currentDateString = `${currentMonth}-${currentDay}`
 
-        characters.value.forEach(character => {
+        characters.value.forEach((character: CharacterImpl) => {
             if (character.birthday === currentDateString) {
                 character.incrementAge()
             }
@@ -79,6 +82,15 @@ export const useGameStore = defineStore('game', () => {
 
     initializeCharacters()
 
+    // 添加这个新方法
+    function removeFamily(family: Family) {
+        families.value = families.value.filter(f => f !== family);
+    }
+
+    function removeFromUnmarried(character: CharacterImpl) {
+        unmarriedCharacters.value = unmarriedCharacters.value.filter(c => c !== character);
+    }
+
     return { 
         characters, 
         families,
@@ -88,6 +100,8 @@ export const useGameStore = defineStore('game', () => {
         addCharacter, 
         advanceDay, 
         checkMarriages, 
-        togglePause
+        togglePause,
+        removeFamily,
+        removeFromUnmarried
     }
 })
