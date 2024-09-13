@@ -1,6 +1,6 @@
 export const CONFIG = {
     INITIAL_CHARACTERS: 5,
-    DAY_DURATION_MS: 10,
+    DAY_DURATION_MS: 1,
     INITIAL_DATE: new Date(2023, 0, 1),
     MARRIAGE_PROBABILITY: 0.1,
     SEXUAL_BEHAVIOR_PROBABILITY: 0.1, // 每天每对夫妇发生性行为的概率为10%

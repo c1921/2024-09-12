@@ -4,8 +4,7 @@
       <thead>
         <tr>
           <th>Family Name</th>
-          <th>Living Members</th>
-          <th>Total Members</th>
+          <th>Members</th>
         </tr>
       </thead>
       <tbody>
@@ -13,9 +12,8 @@
             :class="{ 'is-selected': selectedFamilyId === family.id }"
             @click="$emit('selectFamily', family)"
             style="cursor: pointer;">
-          <td>{{ family.name }} (ID: {{ family.id.slice(0, 4) }})</td>
+          <td>{{ family.name }}</td>
           <td>{{ getLivingMembersCount(family) }}</td>
-          <td>{{ family.members.length }}</td>
         </tr>
       </tbody>
     </table>
