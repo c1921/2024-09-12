@@ -1,4 +1,5 @@
 import { Family } from './Family';
+import { CONFIG } from '../config';
 
 export interface Physiology {
     health: number;
@@ -102,5 +103,31 @@ export class CharacterImpl implements Character {
             this.spouse.spouse = null;
             this.spouse.isMarried = false;
         }
+    }
+
+    updateFertility(): void {
+        const { FERTILITY_PEAK_AGE, FERTILITY_END_AGE } = CONFIG;
+        const initialFertility = this.physiology.fertility;
+
+        if (this.age <= FERTILITY_PEAK_AGE) {
+            // 年龄小于等于峰值年龄时，保持初始生育能力
+            return;
+        }
+
+        if (this.age >= FERTILITY_END_AGE) {
+            // 年龄大于等于结束年龄时，生育能力为0
+            this.physiology.fertility = 0;
+            return;
+        }
+
+        // 计算当前年龄在生育周期中的相对位置（0到1之间）
+        const x = (this.age - FERTILITY_PEAK_AGE) / (FERTILITY_END_AGE - FERTILITY_PEAK_AGE);
+
+        // 使用抛物线函数：y = -(x^2)
+        // 这会产生一个从(0,0)开始，缓慢下降然后快速下降的曲线
+        const fertilityFactor = -(x * x) + 1;
+
+        // 应用衰减因子到初始生育能力
+        this.physiology.fertility = Math.max(0, Math.floor(initialFertility * fertilityFactor));
     }
 }

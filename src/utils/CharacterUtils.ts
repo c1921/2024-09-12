@@ -2,6 +2,7 @@ import { CharacterImpl } from '../types/Character';
 import surnamesData from '../data/surnames.json';
 import maleNamesData from '../data/maleNames.json';
 import femaleNamesData from '../data/femaleNames.json';
+import { CONFIG } from '../config';
 
 const surnames = surnamesData.surnames;
 const maleNames = maleNamesData.maleNames;
@@ -15,11 +16,13 @@ export class CharacterUtils {
             : femaleNames[Math.floor(Math.random() * femaleNames.length)];
         const lastName = surnames[Math.floor(Math.random() * surnames.length)];
 
+        const age = Math.floor(Math.random() * (CONFIG.INITIAL_CHARACTER_MAX_AGE - CONFIG.INITIAL_CHARACTER_MIN_AGE + 1)) + CONFIG.INITIAL_CHARACTER_MIN_AGE;
+
         return new CharacterImpl(
             Math.random().toString(36).substr(2, 9),
             firstName,
             lastName,
-            Math.floor(Math.random() * (70 - 18 + 1)) + 18,
+            age,
             gender,
             CharacterUtils.generateRandomBirthday(),
             this.generateRandomPhysiologyValue(),

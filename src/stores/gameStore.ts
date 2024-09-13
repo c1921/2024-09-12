@@ -82,16 +82,14 @@ export const useGameStore = defineStore('game', () => {
     }
 
     function checkBirthdays() {
-        const currentMonth = (currentDate.value.getMonth() + 1).toString().padStart(2, '0')
-        const currentDay = currentDate.value.getDate().toString().padStart(2, '0')
-        const currentDateString = `${currentMonth}-${currentDay}`
-
+        const today = `${(currentDate.value.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.value.getDate().toString().padStart(2, '0')}`;
         characters.value.forEach((character: CharacterImpl) => {
-            if (character.birthday === currentDateString) {
-                character.incrementAge()
-                addLog(`${character.firstName} ${character.lastName} celebrated their ${character.age}th birthday`)
+            if (character.birthday === today) {
+                character.incrementAge();
+                character.updateFertility(); // 在生日时更新生育能力
+                addLog(`${character.firstName} ${character.lastName} is now ${character.age} years old.`);
             }
-        })
+        });
     }
 
     function togglePause() {
