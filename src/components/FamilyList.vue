@@ -1,8 +1,5 @@
 <template>
   <div>
-    <div class="buttons mb-4">
-      <button class="button is-primary" @click="$emit('addCharacter')">Add Random Character</button>
-    </div>
     <table class="table is-fullwidth is-hoverable">
       <thead>
         <tr>
@@ -39,6 +36,6 @@ export default defineComponent({
       default: ''
     }
   },
-  emits: ['addCharacter', 'selectFamily']
+  emits: ['selectFamily']
 })
 </script>
