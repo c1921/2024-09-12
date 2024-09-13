@@ -39,16 +39,18 @@ export const useGameStore = defineStore('game', () => {
     }
 
     function checkMarriages() {
-        const unmarriedCharacters = characters.value.filter((c: CharacterImpl) => !c.isMarried);
-        const shuffled = [...unmarriedCharacters].sort(() => 0.5 - Math.random());
+        const eligibleCharacters = characters.value.filter((c: CharacterImpl) => 
+            !c.isMarried && c.age >= CONFIG.MINIMUM_MARRIAGE_AGE
+        );
+        const shuffled = [...eligibleCharacters].sort(() => 0.5 - Math.random());
 
         for (let i = 0; i < shuffled.length - 1; i += 2) {
             const char1 = shuffled[i];
             const char2 = shuffled[i + 1];
 
-            if (Math.random() < CONFIG.MARRIAGE_PROBABILITY) {
+            if (char1.gender !== char2.gender && Math.random() < CONFIG.MARRIAGE_PROBABILITY) {
                 MarriageService.marry(char1, char2);
-                addLog(`${char1.firstName} ${char1.lastName} married ${char2.firstName} ${char2.lastName}`)
+                addLog(`${char1.firstName} ${char1.lastName} married ${char2.firstName} ${char2.lastName}`);
             }
         }
     }
@@ -162,9 +164,16 @@ export const useGameStore = defineStore('game', () => {
 
     function giveBirth(mother: CharacterImpl) {
         const father = mother.spouse as CharacterImpl | null;
-        const baby = CharacterUtils.createBaby(mother, father);
+        // 使用父亲的姓氏，如果父亲不存在则使用母亲的姓氏
+        const babyLastName = father ? father.lastName : mother.lastName;
+        const baby = CharacterUtils.createBaby(mother, father, babyLastName);
         characters.value.push(baby);
-        mother.family.addMember(baby);
+        
+        // 使用父亲的家庭（如果存在），否则使用母亲的家庭
+        const family = father ? father.family : mother.family;
+        family.addMember(baby);
+        baby.family = family;
+        
         mother.addChild(baby);
         if (father) {
             father.addChild(baby);

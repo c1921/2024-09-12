@@ -5,7 +5,10 @@
       <p><strong>Age: </strong>{{ character.age }}</p>
       <p><strong>Gender: </strong>{{ character.gender }}</p>
       <p><strong>Birthday: </strong>{{ character.birthday }}</p>
-      <p><strong>Marital Status: </strong>{{ character.isMarried ? 'Married' : 'Single' }}</p>
+      <p>
+        <strong>Marital Status: </strong>
+        {{ character.isMarried ? 'Married' : character.age >= CONFIG.MINIMUM_MARRIAGE_AGE ? 'Single' : 'Too young to marry' }}
+      </p>
       <p v-if="character.spouse">
         <strong>Spouse: </strong>{{ character.spouse.firstName }} {{ character.spouse.lastName }}
       </p>
@@ -56,6 +59,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { Character } from '../types/Character'
+import { CONFIG } from '../config'
 
 export default defineComponent({
   name: 'CharacterDetails',
@@ -65,6 +69,9 @@ export default defineComponent({
       required: false,
       default: null
     }
+  },
+  setup() {
+    return { CONFIG }
   }
 })
 </script>
