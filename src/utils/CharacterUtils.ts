@@ -15,20 +15,16 @@ export class CharacterUtils {
             : femaleNames[Math.floor(Math.random() * femaleNames.length)];
         const lastName = surnames[Math.floor(Math.random() * surnames.length)];
 
-        const character = new CharacterImpl(
+        return new CharacterImpl(
             Math.random().toString(36).substr(2, 9),
             firstName,
             lastName,
             Math.floor(Math.random() * (70 - 18 + 1)) + 18,
             gender,
-            CharacterUtils.generateRandomBirthday()
+            CharacterUtils.generateRandomBirthday(),
+            this.generateRandomPhysiologyValue(),
+            this.generateRandomPhysiologyValue()
         );
-
-        // 随机化生理属性
-        character.physiology.health = this.generateRandomPhysiologyValue();
-        character.physiology.fertility = this.generateRandomPhysiologyValue();
-
-        return character;
     }
 
     static generateRandomBirthday(): string {
@@ -64,10 +60,12 @@ export class CharacterUtils {
         const baby = new CharacterImpl(
             Math.random().toString(36).substr(2, 9),
             firstName,
-            lastName, // 使用传入的姓氏
+            lastName,
             0,
             gender,
-            CharacterUtils.generateRandomBirthday()
+            CharacterUtils.generateRandomBirthday(),
+            this.generateRandomPhysiologyValue(),
+            this.generateRandomPhysiologyValue()
         );
 
         baby.mother = mother;

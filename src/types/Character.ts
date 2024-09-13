@@ -44,12 +44,14 @@ export class CharacterImpl implements Character {
         public lastName: string,
         public age: number,
         public gender: 'Male' | 'Female',
-        public birthday: string
+        public birthday: string,
+        health: number,
+        fertility: number
     ) {
         this.family = new Family(this);
         this.physiology = {
-            health: 100,
-            fertility: 100
+            health: health,
+            fertility: fertility
         };
     }
 
