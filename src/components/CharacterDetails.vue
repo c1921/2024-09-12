@@ -10,6 +10,8 @@
         <strong>Spouse:</strong> {{ character.spouse.firstName }} {{ character.spouse.lastName }}
       </p>
       <p><strong>Family:</strong> {{ character.family.name }}</p>
+      <p><strong>Health:</strong> {{ character.physiology.health }}</p>
+      <p><strong>Fertility:</strong> {{ character.physiology.fertility }}</p>
     </div>
   </div>
   <div v-else class="box">

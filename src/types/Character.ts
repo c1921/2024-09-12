@@ -1,5 +1,11 @@
 import { Family } from './Family';
 
+export interface Physiology {
+    health: number;
+    fertility: number;
+    // 可以在这里添加更多生理属性
+}
+
 export interface Character {
     id: string;
     firstName: string;
@@ -10,12 +16,14 @@ export interface Character {
     isMarried: boolean;
     spouse: Character | null;
     family: Family;
+    physiology: Physiology;
 }
 
 export class CharacterImpl implements Character {
     public isMarried: boolean = false;
     public spouse: Character | null = null;
     public family: Family;
+    public physiology: Physiology;
 
     constructor(
         public id: string,
@@ -26,6 +34,10 @@ export class CharacterImpl implements Character {
         public birthday: string
     ) {
         this.family = new Family(this);
+        this.physiology = {
+            health: 100,
+            fertility: 100
+        };
     }
 
     incrementAge(): void {

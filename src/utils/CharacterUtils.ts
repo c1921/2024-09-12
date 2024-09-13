@@ -15,7 +15,7 @@ export class CharacterUtils {
             : femaleNames[Math.floor(Math.random() * femaleNames.length)];
         const lastName = surnames[Math.floor(Math.random() * surnames.length)];
 
-        return new CharacterImpl(
+        const character = new CharacterImpl(
             Math.random().toString(36).substr(2, 9),
             firstName,
             lastName,
@@ -23,6 +23,12 @@ export class CharacterUtils {
             gender,
             CharacterUtils.generateRandomBirthday()
         );
+
+        // 随机化生理属性
+        character.physiology.health = this.generateRandomPhysiologyValue();
+        character.physiology.fertility = this.generateRandomPhysiologyValue();
+
+        return character;
     }
 
     static generateRandomBirthday(): string {
@@ -42,5 +48,10 @@ export class CharacterUtils {
 
         const day = Math.floor(Math.random() * maxDay) + 1;
         return `${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    }
+
+    private static generateRandomPhysiologyValue(): number {
+        // 生成80到100之间的随机整数
+        return Math.floor(Math.random() * 21) + 80;
     }
 }
