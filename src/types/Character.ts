@@ -3,7 +3,6 @@ import { Family } from './Family';
 export interface Physiology {
     health: number;
     fertility: number;
-    // 可以在这里添加更多生理属性
 }
 
 export interface Character {
@@ -17,6 +16,7 @@ export interface Character {
     spouse: Character | null;
     family: Family;
     physiology: Physiology;
+    status: string[]; // 新增状态属性
 }
 
 export class CharacterImpl implements Character {
@@ -24,6 +24,7 @@ export class CharacterImpl implements Character {
     public spouse: Character | null = null;
     public family: Family;
     public physiology: Physiology;
+    public status: string[] = []; // 初始化为空数组
 
     constructor(
         public id: string,
@@ -42,5 +43,15 @@ export class CharacterImpl implements Character {
 
     incrementAge(): void {
         this.age += 1;
+    }
+
+    addStatus(newStatus: string): void {
+        if (!this.status.includes(newStatus)) {
+            this.status.push(newStatus);
+        }
+    }
+
+    removeStatus(statusToRemove: string): void {
+        this.status = this.status.filter(status => status !== statusToRemove);
     }
 }

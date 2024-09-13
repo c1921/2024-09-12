@@ -5,6 +5,7 @@ import { CharacterUtils } from '../utils/CharacterUtils'
 import { Family } from '../types/Family'
 import { CONFIG } from '../config'
 import { MarriageService } from '../services/MarriageService';
+import { SexualBehaviorService } from '../services/SexualBehaviorService';
 
 export const useGameStore = defineStore('game', () => {
     const characters = ref<CharacterImpl[]>([])
@@ -52,6 +53,19 @@ export const useGameStore = defineStore('game', () => {
         }
     }
 
+    function checkSexualBehavior() {
+        const marriedCharacters = characters.value.filter(c => c.isMarried && c.spouse);
+        for (const character of marriedCharacters) {
+            if (Math.random() < CONFIG.SEXUAL_BEHAVIOR_PROBABILITY) {
+                const spouse = character.spouse as CharacterImpl;
+                const result = SexualBehaviorService.performSexualAct(character, spouse);
+                if (result) {
+                    addLog(`${character.firstName} ${character.lastName} and ${spouse.firstName} ${spouse.lastName} performed a sexual act.`);
+                }
+            }
+        }
+    }
+
     function advanceDay() {
         if (!isPaused.value) {
             currentDate.value.setDate(currentDate.value.getDate() + 1)
@@ -59,6 +73,7 @@ export const useGameStore = defineStore('game', () => {
             checkBirthdays()
             checkMarriages()
             removeEmptyFamilies() // 在每天结束时检查并移除空家庭
+            checkSexualBehavior();
         }
     }
 
@@ -104,6 +119,36 @@ export const useGameStore = defineStore('game', () => {
         unmarriedCharacters.value = unmarriedCharacters.value.filter(c => c !== character);
     }
 
+    function addStatusToCharacter(characterId: string, status: string) {
+        const character = characters.value.find(c => c.id === characterId);
+        if (character) {
+            character.addStatus(status);
+            addLog(`${character.firstName} ${character.lastName} is now ${status}`);
+        }
+    }
+
+    function removeStatusFromCharacter(characterId: string, status: string) {
+        const character = characters.value.find(c => c.id === characterId);
+        if (character) {
+            character.removeStatus(status);
+            addLog(`${character.firstName} ${character.lastName} is no longer ${status}`);
+        }
+    }
+
+    function performSexualAct(character1Id: string, character2Id: string) {
+        const character1 = characters.value.find(c => c.id === character1Id);
+        const character2 = characters.value.find(c => c.id === character2Id);
+
+        if (character1 && character2) {
+            const result = SexualBehaviorService.performSexualAct(character1, character2);
+            if (result) {
+                addLog(`${character1.firstName} ${character1.lastName} and ${character2.firstName} ${character2.lastName} performed a sexual act.`);
+            } else {
+                addLog(`Sexual act between ${character1.firstName} ${character1.lastName} and ${character2.firstName} ${character2.lastName} could not be performed.`);
+            }
+        }
+    }
+
     return { 
         characters, 
         families,
@@ -117,6 +162,9 @@ export const useGameStore = defineStore('game', () => {
         removeFamily,
         removeFromUnmarried,
         logs,
-        addLog
+        addLog,
+        addStatusToCharacter,
+        removeStatusFromCharacter,
+        performSexualAct
     }
 })
