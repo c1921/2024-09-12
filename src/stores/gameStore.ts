@@ -7,15 +7,23 @@ import { CONFIG } from '../config'
 import { MarriageService } from '../services/MarriageService';
 import { SexualBehaviorService } from '../services/SexualBehaviorService';
 
+/**
+ * 游戏核心状态管理
+ * 使用 Pinia 管理游戏的全局状态
+ */
 export const useGameStore = defineStore('game', () => {
-    const characters = ref<CharacterImpl[]>([])
-    const families = ref<Family[]>([])
-    const currentDate = ref(CONFIG.INITIAL_DATE)
-    const isPaused = ref(false)
-    const unmarriedCharacters = ref<CharacterImpl[]>([]);
+    // 核心状态定义
+    const characters = ref<CharacterImpl[]>([])      // 所有角色列表
+    const families = ref<Family[]>([])               // 所有家族列表
+    const currentDate = ref(CONFIG.INITIAL_DATE)     // 当前游戏日期
+    const isPaused = ref(false)                      // 游戏是否暂停
+    const unmarriedCharacters = ref<CharacterImpl[]>([])  // 未婚角色列表
+    const logs = ref<string[]>([])                   // 游戏日志记录
 
-    const logs = ref<string[]>([])
-
+    /**
+     * 添加游戏日志
+     * 新日志会被添加到列表开头，并保持最多100条记录
+     */
     function addLog(message: string) {
         logs.value.unshift(`${formattedDate.value}: ${message}`)
         if (logs.value.length > 100) {
@@ -23,6 +31,12 @@ export const useGameStore = defineStore('game', () => {
         }
     }
 
+    /**
+     * 创建新角色
+     * 1. 生成随机角色
+     * 2. 创建新的家族
+     * 3. 将角色加入家族
+     */
     function addCharacter() {
         const newCharacter = CharacterUtils.createRandom()
         characters.value.push(newCharacter)
@@ -34,10 +48,20 @@ export const useGameStore = defineStore('game', () => {
         addLog(`New character ${newCharacter.firstName} ${newCharacter.lastName} added`)
     }
 
+    /**
+     * 清理空家族
+     * 移除没有成员的家族
+     */
     function removeEmptyFamilies() {
         families.value = families.value.filter(family => family.members.length > 0)
     }
 
+    /**
+     * 检查并处理可能的婚姻
+     * 1. 筛选出符合结婚条件的角色
+     * 2. 随机配对
+     * 3. 根据概率决定是否结婚
+     */
     function checkMarriages() {
         const eligibleCharacters = characters.value.filter((c: CharacterImpl) => 
             !c.isMarried && c.age >= CONFIG.MINIMUM_MARRIAGE_AGE
@@ -55,6 +79,10 @@ export const useGameStore = defineStore('game', () => {
         }
     }
 
+    /**
+     * 检查已婚夫妇的性行为
+     * 根据概率触发性行为，可能导致怀孕
+     */
     function checkSexualBehavior() {
         const marriedCharacters = characters.value.filter(c => c.isMarried && c.spouse);
         for (const character of marriedCharacters) {
@@ -68,6 +96,17 @@ export const useGameStore = defineStore('game', () => {
         }
     }
 
+    /**
+     * 推进游戏时间
+     * 每天执行以下操作：
+     * 1. 检查生日
+     * 2. 处理婚姻
+     * 3. 清理空家族
+     * 4. 处理性行为
+     * 5. 检查怀孕状态
+     * 6. 处理死亡事件
+     * 7. 更新生育冷却期
+     */
     function advanceDay() {
         if (!isPaused.value) {
             currentDate.value.setDate(currentDate.value.getDate() + 1)
@@ -76,18 +115,28 @@ export const useGameStore = defineStore('game', () => {
             checkMarriages()
             removeEmptyFamilies() // 在每天结束时检查并移除空家庭
             checkSexualBehavior();
-            checkPregnancies(); // 添加这行
-            checkDeaths(); // 添加这行
-            updatePregnancyCooldowns(); // 新增这行
+            checkPregnancies();
+            checkDeaths();
+            updatePregnancyCooldowns();
         }
     }
 
+    /**
+     * 更新所有角色的生育冷却期
+     */
     function updatePregnancyCooldowns() {
         characters.value.forEach((character: CharacterImpl) => {
             character.updatePregnancyCooldown();
         });
     }
 
+    /**
+     * 检查角色生日
+     * 在生日时：
+     * 1. 增加年龄
+     * 2. 更新生育能力
+     * 3. 记录日志
+     */
     function checkBirthdays() {
         const today = `${(currentDate.value.getMonth() + 1).toString().padStart(2, '0')}-${currentDate.value.getDate().toString().padStart(2, '0')}`;
         characters.value.forEach((character: CharacterImpl) => {
@@ -99,10 +148,17 @@ export const useGameStore = defineStore('game', () => {
         });
     }
 
+    /**
+     * 切换游戏暂停状态
+     */
     function togglePause() {
         isPaused.value = !isPaused.value
     }
 
+    /**
+     * 格式化当前日期
+     * 返回格式：YYYY-MM-DD
+     */
     const formattedDate = computed(() => {
         const year = currentDate.value.getFullYear()
         const month = (currentDate.value.getMonth() + 1).toString().padStart(2, '0')
@@ -110,24 +166,37 @@ export const useGameStore = defineStore('game', () => {
         return `${year}-${month}-${day}`
     })
 
-    // 初始化角色
+    /**
+     * 初始化游戏角色
+     * 根据配置创建初始角色数量
+     */
     function initializeCharacters() {
         for (let i = 0; i < CONFIG.INITIAL_CHARACTERS; i++) {
             addCharacter()
         }
     }
 
+    // 初始化游戏
     initializeCharacters()
 
-    // 添加这个新方法
+    /**
+     * 移除指定家族
+     */
     function removeFamily(family: Family) {
         families.value = families.value.filter(f => f !== family);
     }
 
+    /**
+     * 从未婚人口池中移除角色
+     */
     function removeFromUnmarried(character: CharacterImpl) {
         unmarriedCharacters.value = unmarriedCharacters.value.filter(c => c !== character);
     }
 
+    /**
+     * 为角色添加状态
+     * 例如：怀孕、生病等
+     */
     function addStatusToCharacter(characterId: string, status: string) {
         const character = characters.value.find(c => c.id === characterId);
         if (character) {
@@ -136,6 +205,9 @@ export const useGameStore = defineStore('game', () => {
         }
     }
 
+    /**
+     * 移除角色状态
+     */
     function removeStatusFromCharacter(characterId: string, status: string) {
         const character = characters.value.find(c => c.id === characterId);
         if (character) {
@@ -144,6 +216,10 @@ export const useGameStore = defineStore('game', () => {
         }
     }
 
+    /**
+     * 执行两个角色间的性行为
+     * 返回是否导致怀孕
+     */
     function performSexualAct(character1Id: string, character2Id: string) {
         const character1 = characters.value.find(c => c.id === character1Id);
         const character2 = characters.value.find(c => c.id === character2Id);
@@ -158,6 +234,10 @@ export const useGameStore = defineStore('game', () => {
         }
     }
 
+    /**
+     * 检查所有怀孕状态的角色
+     * 推进怀孕进度，必要时触发分娩
+     */
     function checkPregnancies() {
         characters.value.forEach((character: CharacterImpl) => {
             if (character.status.includes('Pregnant')) {
@@ -168,6 +248,12 @@ export const useGameStore = defineStore('game', () => {
         });
     }
 
+    /**
+     * 处理分娩事件
+     * 1. 创建新生儿
+     * 2. 设置家族关系
+     * 3. 更新父母状态
+     */
     function giveBirth(mother: CharacterImpl) {
         const father = mother.spouse as CharacterImpl | null;
         // 使用父亲的姓氏，如果父亲不存在则使用母亲的姓氏
@@ -188,6 +274,12 @@ export const useGameStore = defineStore('game', () => {
         addLog(`${mother.firstName} ${mother.lastName} gave birth to ${baby.firstName} ${baby.lastName}`);
     }
 
+    /**
+     * 检查死亡事件
+     * 1. 处理达到死亡年龄的角色
+     * 2. 更新家族关系
+     * 3. 移除死亡角色
+     */
     function checkDeaths() {
         characters.value.forEach((character: CharacterImpl) => {
             if (!character.isDead && character.age >= CONFIG.DEATH_AGE) {
@@ -208,6 +300,7 @@ export const useGameStore = defineStore('game', () => {
         characters.value = characters.value.filter(c => !c.isDead);
     }
 
+    // 导出方法和状态
     return { 
         characters, 
         families,
